@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zipup</title>
+
+    <meta name="description" content="zipup: Simple modern, small, zero dependency zip library for browser and node based JavaScript" />
+    <meta name="keywords" content="zip unzip javascript node" />
+    <meta name="thumbnail" content="https://greggman.github.io/zipup/zipup-no-anim.png" />
+
+    <meta property="og:title" content="zipup" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://greggman.github.io/zipup/zipup-no-anim.png" />
+    <meta property="og:description" content="zipup: Simple modern, small, zero dependency zip library for browser and node based JavaScript" />
+    <meta property="og:url" content="https://greggman.github.io/zipup/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@greggman">
+    <meta name="twitter:creator" content="@greggman">
+    <meta name="twitter:domain" content="greggman.github.io">
+    <meta name="twitter:title" content="zipup">
+    <meta name="twitter:url" content="https://greggman.github.io/zipup/">
+    <meta name="twitter:description" content="zipup: Simple modern, small, zero dependency zip library for browser and node based JavaScript" />
+    <meta name="twitter:image:src" content="https://greggman.github.io/zipup/zipup-no-anim.png">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/languages/javascript.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        background: #222;
+        font-size: large;
+        font-family: sans-serif;
+      }
+      .logo img {
+        display: block;
+      }
+      .logo,
+      .content {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+      }
+      .content>div {
+        padding: 2em;
+        background: linear-gradient(#53be9a 0, #444 150px);
+        color: white;
+      }
+      a {
+        color: yellow;
+        text-decoration: none;
+      }
+      pre {
+        padding: 1em;
+        font-size: medium;
+      }
+      p {
+        line-height: 1.3;
+      }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/monokai-sublime.min.css" rel="stylesheet">
+  </head>
+  <body>
+<div class="logo">
+  <img src="./zipup.svg" style="width: 100%;">
+</div>
+<div class="content"><div><pre>
+Simple modern, small, zero dependency zip library for browser and node based JavaScript
+
+[![Build Status](https://travis-ci.org/greggman/zipup.svg?branch=master)](https://travis-ci.org/greggman/zipup)
+[[Live Tests](https://greggman.github.io/zipup/test/)]
+
+* Less than 3k gzipped.
+
+# How to use
+
+```js
+import { Zip } from '@greggman/zipup';
+
+const zip = new Zip();
+zip.addFile('foo.txt', someString);
+zip.addFile('bar.png', someArrayBuffer);
+zip.addFile('folder/moo.mp4', someArrayBufferView);
+zip.addFile('folder/stuff.bin', someBlob);
+const blob = await zip.finalize(comment?: string);
+```
+
+## Why?
+
+Because most of the other libraries are old and crufty. The browser itself now supports
+compression and so does node.js so why not just use those. Example: JSZip is 754k. zipup is < 3k (gzipped).
+Yes, that's not a completely fair comparison. zipup has the functionality I need. I don't need the other 751k.
+Nor do I need 13 dependencies.
+
+Note: the library uses [`CompressionStream`](https://caniuse.com/?search=compressionstream).
+Use a [polyfill](https://github.com/101arrowz/compression-streams-polyfill) if you're supporting
+old stuff.
+
+# API
+
+```js
+class Zip {
+  constructor(options: { platform?: Platform });
+  async addFile(pathOrInfo: string | EntryInfo, string | ArrayBuffer | ArrayBufferView | Blob): Promise<void>;
+  addFolder(pathOrInfo: string | EntryInfo): ZipFolder;
+  async finalize(comment?: string): Promise<Blob>;
+};
+
+class EntryInfo {
+  name: string,                     // name of entry
+  comment?: string,                 // the comment for this entry
+  lastModDate?: Date,               // a Date
+}
+
+class ZipFolder {
+  async addFile(pathOrInfo: string | EntryInfo, string | ArrayBuffer | ArrayBufferView | Blob): Promise<void>;
+  addFolder(pathOrInfo: string | EntryInfo): ZipFolder;  
+}
+
+type Platform = 'windows' | 'linux' | 'macos' | 'unix';
+```
+
+As you can see above you can pass either just a path, or more data
+
+```js
+zip.addFile('hello.txt', someString);
+zip.addFile({
+  name: 'readme.txt',
+  comment: 'the readme file',
+  lastModData: new Date(),  // or any date
+}, content)
+```
+
+`addFile` is asynchronous. You do not have to wait as `finalize` will automatically wait
+but `addFile` does return a promise if you want to throttle (🤷‍♂️).
+
+You can add a file to a folder either by including it in the name
+
+```js
+zip.addFile('folder/file.bin', ...);
+```
+
+or by creating a folder
+
+```js
+const folder = zip.addFolder('folder');
+folder.addFile('file.bin');
+```
+
+# Notes:
+
+## Live Browser Tests
+
+[https://greggman.github.io/zipup/test/](https://greggman.github.io/zipup/test/)
+
+# License
+
+MIT
+</pre></div></div>
+<style>
+#forkongithub a {
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    font-family: arial,sans-serif;
+    text-align: center;
+    font-weight: bold;
+    padding: 5px 40px;
+    font-size: 12px;
+    line-height: 24px;
+    position: relative;
+    transition: 0.5s;
+    display: block;
+}
+#forkongithub a:hover {
+    background: #c11;
+    color: #fff;
+}
+#forkongithub a::before,#forkongithub a::after {
+    content: "";
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 1px;
+    left: 0;
+    height: 1px;
+    background: #fff;
+}
+#forkongithub a::after {
+    bottom: 1px;
+    top: auto;
+}
+
+@media screen and (min-width: 400px){
+    #forkongithub{
+        position: fixed;
+        display: block;
+        top: 0;
+        right: 0;
+        width: 200px;
+        overflow: hidden;
+        height: 200px;
+        z-index: 9999;
+    }
+    #forkongithub a{
+        width: 200px;
+        position: absolute;
+        top: 40px;
+        right: -70px;
+        transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.8);
+    }
+}
+
+</style>
+<div id="forkongithub"><a href="https://github.com/greggman/zipup">Fork me on GitHub</a></div>
+  </body>
+  <script>
+    /* global showdown, hljs */
+    const converter = new showdown.Converter();
+    const pre = document.querySelector('pre');
+    const text = pre.innerText;
+    const html = converter.makeHtml(text);
+    pre.parentElement.innerHTML = html;
+    hljs.initHighlightingOnLoad();
+  </script>
+</html>

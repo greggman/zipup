@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "paths": {
+      "@greggman/zipup": ["../../dist/zipup.d.ts"] 
+    }
+  },
+  "include": ["./ts-test.ts"]
+}
