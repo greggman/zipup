@@ -77,8 +77,9 @@ zip.addFile({
 }, content)
 ```
 
-`addFile` is asynchronous. You do not have to wait as `finalize` will automatically wait
-but `addFile` does return a promise if you want to throttle (🤷‍♂️).
+`addFile` is asynchronous. You do not have to wait as `finalize` will
+automatically wait but `addFile` does return a promise if you want to throttle
+(🤷‍♂️).
 
 You can add a file to a folder either by including it in the name
 
@@ -96,9 +97,10 @@ folder.addFile('file.bin');
 # Why?
 
 Most of the other libraries are old and crufty. The browser itself now supports
-compression and so does node.js so why not just use those. Example: JSZip is 754k. zipup is < 3k (gzipped).
-Yes, that's not a completely fair comparison. zipup has the functionality I need. I don't need the other 751k of stuff.
-Nor do I need 13 dependencies.
+compression and so does node.js so why not just use those. Example: JSZip is 97k
+minified, 28k gzipped. zipup is 8k minified, 3k (gzipped). Yes, that's not a
+completely fair comparison. zipup has the functionality I need. I don't need the
+other stuff. Nor do I need 13 dependencies.
 
 Note: the library uses [`CompressionStream`](https://caniuse.com/?search=compressionstream).
 Use a [polyfill](https://github.com/101arrowz/compression-streams-polyfill) if you're supporting
@@ -110,8 +112,11 @@ Use [unzipit](https://greggman.github.io/unzipit).
 
 # Attributes
 
-AFAICT it's not common to use attributes in zip files.
-Attributes in zip files are platform specific and to be honest, I have no idea what all the various tools do as there are too many. Effectively, if you want to set permissions you should choose a platform when you create the zip file and then use the appropriate permissions.
+AFAICT it's not common to use attributes in zip files. Attributes in zip files
+are platform specific and to be honest, I have no idea what all the various
+tools do as there are too many. Effectively, if you want to set permissions you
+should choose a platform when you create the zip file and then use the
+appropriate permissions.
 
 ```js
 import {Zip, DosAttributes, UnixPermissions} from 'zipup';

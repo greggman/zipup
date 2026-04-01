@@ -89,10 +89,11 @@ const blob = await zip.finalize(comment?: string);
 
 ## Why?
 
-Because most of the other libraries are old and crufty. The browser itself now supports
-compression and so does node.js so why not just use those. Example: JSZip is 754k. zipup is < 3k (gzipped).
-Yes, that's not a completely fair comparison. zipup has the functionality I need. I don't need the other 751k.
-Nor do I need 13 dependencies.
+Because most of the other libraries are old and crufty. The browser itself now
+supports compression and so does node.js so why not just use those. Example:
+JSZip is 97k minified, 28k gzipped. zipup is 8k minified, 3k (gzipped). Yes,
+that's not a completely fair comparison. zipup has the functionality I need. I
+don't need the other stuff. Nor do I need 13 dependencies.
 
 Note: the library uses [`CompressionStream`](https://caniuse.com/?search=compressionstream).
 Use a [polyfill](https://github.com/101arrowz/compression-streams-polyfill) if you're supporting
