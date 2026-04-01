@@ -166,15 +166,19 @@ describe('zipup large blob', function() {
     await z.addFile('big.bin', blob);
     const outBlob = await z.finalize();
 
-    const out = await unzip(await outBlob.arrayBuffer());
+    const out = await unzip(outBlob);
     const e = out.entries['big.bin'];
     assert.ok(e);
+    assert.isBelow(e.compressedSize, e.size * 0.1); // should be significantly compressed
     const got = new Uint8Array(await e.arrayBuffer());
     assert.equal(got.length, 100 * MB);
-    // spot-check a few offsets
-    assert.equal(got[0], 0);
-    assert.equal(got[MB], 1);
-    assert.equal(got[50 * MB], 50 & 0xff);
+    // verify entire contents: each MB chunk was filled with the chunk index byte
+    for (let i = 0; i < got.length; i++) {
+      const expected = (Math.floor(i / MB) & 0xff);
+      if (got[i] !== expected) {
+        assert.fail(`byte mismatch at ${i}: ${got[i]} !== ${expected}`);
+      }
+    }
   });
 });
 
