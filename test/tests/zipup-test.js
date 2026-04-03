@@ -169,7 +169,7 @@ describe('zipup large blob', function() {
     const out = await unzip(outBlob);
     const e = out.entries['big.bin'];
     assert.ok(e);
-    assert.isBelow(e.compressedSize, e.size * 0.1); // should be significantly compressed
+    assert.isBelow(e.compressedSize, e.size * 0.1, 'should be significantly compressed');
     const got = new Uint8Array(await e.arrayBuffer());
     assert.equal(got.length, 100 * MB);
     // verify entire contents: each MB chunk was filled with the chunk index byte
@@ -242,7 +242,17 @@ describe('zipup metadata and comments', function() {
 });
 
 describe('zipup zip64 support', function() {
-  it.skip('roundtrips >0xFFFE entries (triggers ZIP64)', async function() {
+  before(function() {
+    if (typeof window !== 'undefined' && typeof URLSearchParams !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('zip64')) {
+        return;
+      }
+    }
+    this.skip();
+  });
+
+  it('roundtrips >0xFFFE entries (triggers ZIP64)', async function() {
     this.timeout(5 * 60 * 1000);
     const count = 0x10010; // > 0xFFFE
     const z = new Zip();
@@ -259,7 +269,7 @@ describe('zipup zip64 support', function() {
   });
 
   // runs out of memory.
-  it.skip('handles single entry >4GB using ZIP64', async function() {
+  it('handles single entry >4GB using ZIP64', async function() {
     this.timeout(10 * 60 * 1000);
     const MB = 1024 * 1024;
     // make a 64MB pattern blob
