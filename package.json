@@ -1,6 +1,6 @@
 {
   "name": "@greggman/zipup",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "small modern zip library for JavaScript",
   "type": "module",
   "main": "dist/zipup.module.js",
