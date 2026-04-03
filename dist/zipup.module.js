@@ -1,4 +1,4 @@
-/* zipup@0.0.1, license MIT */
+/* zipup@0.0.2, license MIT */
 // Minimal ZIP packer. Tries to compress using CompressionStream('deflate-raw') when available,
 // falls back to store (no compression). Returns a Blob of the ZIP archive.
 var DosAttributes;
@@ -110,8 +110,9 @@ function dateToDosDate(d) {
 async function tryCompress(input) {
     try {
         const cs = new CompressionStream('deflate-raw');
-        // use the underlying ArrayBuffer to construct the Blob to satisfy typing
-        const rs = new Response(new Blob([input.buffer])).body.pipeThrough(cs);
+        // construct an ArrayBuffer containing only the Uint8Array's bytes
+        const arr = input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength);
+        const rs = new Response(new Blob([arr])).body.pipeThrough(cs);
         const chunks = [];
         const reader = rs.getReader();
         let total = 0;

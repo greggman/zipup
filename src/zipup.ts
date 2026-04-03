@@ -131,8 +131,9 @@ function dateToDosDate(d: Date) {
 async function tryCompress(input: Uint8Array) {
   try {
     const cs = new CompressionStream('deflate-raw');
-    // use the underlying ArrayBuffer to construct the Blob to satisfy typing
-    const rs = new Response(new Blob([input.buffer as ArrayBuffer])).body!.pipeThrough(cs);
+    // construct an ArrayBuffer containing only the Uint8Array's bytes
+    const arr = input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength);
+    const rs = new Response(new Blob([arr as ArrayBuffer])).body!.pipeThrough(cs);
     const chunks: Uint8Array[] = [];
     const reader = rs.getReader();
     let total = 0;

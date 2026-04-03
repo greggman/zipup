@@ -1,4 +1,4 @@
-/* zipup@0.0.1, license MIT */
+/* zipup@0.0.2, license MIT */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -116,8 +116,9 @@
   async function tryCompress(input) {
       try {
           const cs = new CompressionStream('deflate-raw');
-          // use the underlying ArrayBuffer to construct the Blob to satisfy typing
-          const rs = new Response(new Blob([input.buffer])).body.pipeThrough(cs);
+          // construct an ArrayBuffer containing only the Uint8Array's bytes
+          const arr = input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength);
+          const rs = new Response(new Blob([arr])).body.pipeThrough(cs);
           const chunks = [];
           const reader = rs.getReader();
           let total = 0;
